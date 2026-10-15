@@ -1,0 +1,19 @@
+{
+  "name": "rentacar",
+  "version": "1.0.0",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev:web": "npm run dev --workspace=@rentacar/web",
+    "dev:api": "npm run start:dev --workspace=@rentacar/api",
+    "build:web": "npm run build --workspace=@rentacar/web",
+    "build:api": "npm run build --workspace=@rentacar/api"
+  },
+  "allowScripts": {
+    "prisma@7.10.0": true,
+    "@prisma/engines@7.10.0": true
+  }
+}
