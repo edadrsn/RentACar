@@ -1,12 +1,31 @@
-import { Controller, Get } from '@nestjs/common';
-import { AppService } from './app.service';
+import { Controller, Get, HttpException, HttpStatus } from '@nestjs/common';
+import { PrismaService } from './prisma/prisma.service';
 
-@Controller()
+@Controller('health')
 export class AppController {
-  constructor(private readonly appService: AppService) {}
+  constructor(private readonly prisma: PrismaService) {}
 
   @Get()
-  getHello(): string {
-    return this.appService.getHello();
+  async getHealth() {
+    try {
+      await this.prisma.$queryRaw`SELECT 1`;   //PostgreSQL'e gerçekten bir SQL sorgusu gönderir.
+
+      return {
+        status: 'ok',
+        service: 'RentACar API',
+        database: 'connected',
+        timestamp: new Date().toISOString(),
+      };
+    } catch {
+      throw new HttpException(
+        {
+          status: 'error',
+          service: 'RentACar API',
+          database: 'disconnected',
+          timestamp: new Date().toISOString(),
+        },
+        HttpStatus.SERVICE_UNAVAILABLE,
+      );
+    }
   }
 }
