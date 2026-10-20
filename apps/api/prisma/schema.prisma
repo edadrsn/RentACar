@@ -3,6 +3,7 @@
 
 // Get a free hosted Postgres database in seconds: `npx create-db`
 
+
 generator client {
   provider = "prisma-client"
   output   = "../src/generated/prisma"
@@ -10,4 +11,26 @@ generator client {
 
 datasource db {
   provider = "postgresql"
+}
+
+enum TenantStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+model Tenant {
+  id             String       @id @default(cuid())   //her kiracı için benzersiz id
+  companyName    String
+  slug           String       @unique                //şirketleri url veya alt alan adı ile tanımlamamızı sağlar
+  contactName    String
+  email          String
+  phone          String?
+  status         TenantStatus @default(PENDING)     //şirketlerin başvuru durumlarını tutar
+  rejectionReason String?                           //başvurunun reddedilme nedeni 
+  approvedAt     DateTime?                          //başvurunun onaylanma zamanı
+  createdAt      DateTime     @default(now())       //başvuru kaydının oluşturulduğu zaman
+  updatedAt      DateTime     @updatedAt            //son güncelleme zamanı
+
+  @@index([status, createdAt])
 }

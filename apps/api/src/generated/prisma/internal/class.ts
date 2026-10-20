@@ -20,7 +20,7 @@ const config: runtime.GetPrismaClientConfig = {
   "clientVersion": "7.10.0",
   "engineVersion": "0edf323efd1d98336f3f0a68684b56f689b900d3",
   "activeProvider": "postgresql",
-  "inlineSchema": "// This is your Prisma schema file,\n// learn more about it in the docs: https://pris.ly/d/prisma-schema\n\n// Get a free hosted Postgres database in seconds: `npx create-db`\n\ngenerator client {\n  provider = \"prisma-client\"\n  output   = \"../src/generated/prisma\"\n}\n\ndatasource db {\n  provider = \"postgresql\"\n}\n",
+  "inlineSchema": "// This is your Prisma schema file,\n// learn more about it in the docs: https://pris.ly/d/prisma-schema\n\n// Get a free hosted Postgres database in seconds: `npx create-db`\n\ngenerator client {\n  provider = \"prisma-client\"\n  output   = \"../src/generated/prisma\"\n}\n\ndatasource db {\n  provider = \"postgresql\"\n}\n\nenum TenantStatus {\n  PENDING\n  APPROVED\n  REJECTED\n}\n\nmodel Tenant {\n  id              String       @id @default(cuid()) //her kiracı için benzersiz id\n  companyName     String\n  slug            String       @unique //şirketleri url veya alt alan adı ile tanımlamamızı sağlar\n  contactName     String\n  email           String\n  phone           String?\n  status          TenantStatus @default(PENDING) //şirketlerin başvuru durumlarını tutar\n  rejectionReason String? //başvurunun reddedilme nedeni \n  approvedAt      DateTime? //başvurunun onaylanma zamanı\n  createdAt       DateTime     @default(now()) //başvuru kaydının oluşturulduğu zaman\n  updatedAt       DateTime     @updatedAt //son güncelleme zamanı\n\n  @@index([status, createdAt])\n}\n",
   "runtimeDataModel": {
     "models": {},
     "enums": {},
@@ -32,10 +32,10 @@ const config: runtime.GetPrismaClientConfig = {
   }
 }
 
-config.runtimeDataModel = JSON.parse("{\"models\":{},\"enums\":{},\"types\":{}}")
+config.runtimeDataModel = JSON.parse("{\"models\":{\"Tenant\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"companyName\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"slug\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"contactName\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"email\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"phone\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"status\",\"kind\":\"enum\",\"type\":\"TenantStatus\"},{\"name\":\"rejectionReason\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"approvedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":null,\"schema\":null}},\"enums\":{},\"types\":{}}")
 config.parameterizationSchema = {
-  strings: JSON.parse("[]"),
-  graph: "AAAA"
+  strings: JSON.parse("[\"where\",\"Tenant.findUnique\",\"Tenant.findUniqueOrThrow\",\"orderBy\",\"cursor\",\"Tenant.findFirst\",\"Tenant.findFirstOrThrow\",\"Tenant.findMany\",\"data\",\"Tenant.createOne\",\"Tenant.createMany\",\"Tenant.createManyAndReturn\",\"Tenant.updateOne\",\"Tenant.updateMany\",\"Tenant.updateManyAndReturn\",\"create\",\"update\",\"Tenant.upsertOne\",\"Tenant.deleteOne\",\"Tenant.deleteMany\",\"having\",\"_count\",\"_min\",\"_max\",\"Tenant.groupBy\",\"Tenant.aggregate\",\"AND\",\"OR\",\"NOT\",\"id\",\"companyName\",\"slug\",\"contactName\",\"email\",\"phone\",\"TenantStatus\",\"status\",\"rejectionReason\",\"approvedAt\",\"createdAt\",\"updatedAt\",\"equals\",\"in\",\"notIn\",\"lt\",\"lte\",\"gt\",\"gte\",\"not\",\"contains\",\"startsWith\",\"endsWith\",\"set\"]"),
+  graph: "OgkQDhoAACwAMBsAAAQAEBwAACwAMB0BAAAAAR4BAC0AIR8BAAAAASABAC0AISEBAC0AISIBAC4AISQAAC8kIiUBAC4AISZAADAAISdAADEAIShAADEAIQEAAAABACABAAAAAQAgDhoAACwAMBsAAAQAEBwAACwAMB0BAC0AIR4BAC0AIR8BAC0AISABAC0AISEBAC0AISIBAC4AISQAAC8kIiUBAC4AISZAADAAISdAADEAIShAADEAIQMiAAAyACAlAAAyACAmAAAyACADAAAABAAgAwAABQAwBAAAAQAgAwAAAAQAIAMAAAUAMAQAAAEAIAMAAAAEACADAAAFADAEAAABACALHQEAAAABHgEAAAABHwEAAAABIAEAAAABIQEAAAABIgEAAAABJAAAACQCJQEAAAABJkAAAAABJ0AAAAABKEAAAAABAQgAAAkAIAsdAQAAAAEeAQAAAAEfAQAAAAEgAQAAAAEhAQAAAAEiAQAAAAEkAAAAJAIlAQAAAAEmQAAAAAEnQAAAAAEoQAAAAAEBCAAACwAwAQgAAAsAMAsdAQA2ACEeAQA2ACEfAQA2ACEgAQA2ACEhAQA2ACEiAQA3ACEkAAA4JCIlAQA3ACEmQAA5ACEnQAA6ACEoQAA6ACECAAAAAQAgCAAADgAgCx0BADYAIR4BADYAIR8BADYAISABADYAISEBADYAISIBADcAISQAADgkIiUBADcAISZAADkAISdAADoAIShAADoAIQIAAAAEACAIAAAQACACAAAABAAgCAAAEAAgAwAAAAEAIA8AAAkAIBAAAA4AIAEAAAABACABAAAABAAgBhUAADMAIBYAADUAIBcAADQAICIAADIAICUAADIAICYAADIAIA4aAAAaADAbAAAXABAcAAAaADAdAQAbACEeAQAbACEfAQAbACEgAQAbACEhAQAbACEiAQAcACEkAAAdJCIlAQAcACEmQAAeACEnQAAfACEoQAAfACEDAAAABAAgAwAAFgAwFAAAFwAgAwAAAAQAIAMAAAUAMAQAAAEAIA4aAAAaADAbAAAXABAcAAAaADAdAQAbACEeAQAbACEfAQAbACEgAQAbACEhAQAbACEiAQAcACEkAAAdJCIlAQAcACEmQAAeACEnQAAfACEoQAAfACEOFQAAIQAgFgAAKwAgFwAAKwAgKQEAAAABKgEAAAAEKwEAAAAELAEAAAABLQEAAAABLgEAAAABLwEAAAABMAEAKgAhMQEAAAABMgEAAAABMwEAAAABDhUAACQAIBYAACkAIBcAACkAICkBAAAAASoBAAAABSsBAAAABSwBAAAAAS0BAAAAAS4BAAAAAS8BAAAAATABACgAITEBAAAAATIBAAAAATMBAAAAAQcVAAAhACAWAAAnACAXAAAnACApAAAAJAIqAAAAJAgrAAAAJAgwAAAmJCILFQAAJAAgFgAAJQAgFwAAJQAgKUAAAAABKkAAAAAFK0AAAAAFLEAAAAABLUAAAAABLkAAAAABL0AAAAABMEAAIwAhCxUAACEAIBYAACIAIBcAACIAIClAAAAAASpAAAAABCtAAAAABCxAAAAAAS1AAAAAAS5AAAAAAS9AAAAAATBAACAAIQsVAAAhACAWAAAiACAXAAAiACApQAAAAAEqQAAAAAQrQAAAAAQsQAAAAAEtQAAAAAEuQAAAAAEvQAAAAAEwQAAgACEIKQIAAAABKgIAAAAEKwIAAAAELAIAAAABLQIAAAABLgIAAAABLwIAAAABMAIAIQAhCClAAAAAASpAAAAABCtAAAAABCxAAAAAAS1AAAAAAS5AAAAAAS9AAAAAATBAACIAIQsVAAAkACAWAAAlACAXAAAlACApQAAAAAEqQAAAAAUrQAAAAAUsQAAAAAEtQAAAAAEuQAAAAAEvQAAAAAEwQAAjACEIKQIAAAABKgIAAAAFKwIAAAAFLAIAAAABLQIAAAABLgIAAAABLwIAAAABMAIAJAAhCClAAAAAASpAAAAABStAAAAABSxAAAAAAS1AAAAAAS5AAAAAAS9AAAAAATBAACUAIQcVAAAhACAWAAAnACAXAAAnACApAAAAJAIqAAAAJAgrAAAAJAgwAAAmJCIEKQAAACQCKgAAACQIKwAAACQIMAAAJyQiDhUAACQAIBYAACkAIBcAACkAICkBAAAAASoBAAAABSsBAAAABSwBAAAAAS0BAAAAAS4BAAAAAS8BAAAAATABACgAITEBAAAAATIBAAAAATMBAAAAAQspAQAAAAEqAQAAAAUrAQAAAAUsAQAAAAEtAQAAAAEuAQAAAAEvAQAAAAEwAQApACExAQAAAAEyAQAAAAEzAQAAAAEOFQAAIQAgFgAAKwAgFwAAKwAgKQEAAAABKgEAAAAEKwEAAAAELAEAAAABLQEAAAABLgEAAAABLwEAAAABMAEAKgAhMQEAAAABMgEAAAABMwEAAAABCykBAAAAASoBAAAABCsBAAAABCwBAAAAAS0BAAAAAS4BAAAAAS8BAAAAATABACsAITEBAAAAATIBAAAAATMBAAAAAQ4aAAAsADAbAAAEABAcAAAsADAdAQAtACEeAQAtACEfAQAtACEgAQAtACEhAQAtACEiAQAuACEkAAAvJCIlAQAuACEmQAAwACEnQAAxACEoQAAxACELKQEAAAABKgEAAAAEKwEAAAAELAEAAAABLQEAAAABLgEAAAABLwEAAAABMAEAKwAhMQEAAAABMgEAAAABMwEAAAABCykBAAAAASoBAAAABSsBAAAABSwBAAAAAS0BAAAAAS4BAAAAAS8BAAAAATABACkAITEBAAAAATIBAAAAATMBAAAAAQQpAAAAJAIqAAAAJAgrAAAAJAgwAAAnJCIIKUAAAAABKkAAAAAFK0AAAAAFLEAAAAABLUAAAAABLkAAAAABL0AAAAABMEAAJQAhCClAAAAAASpAAAAABCtAAAAABCxAAAAAAS1AAAAAAS5AAAAAAS9AAAAAATBAACIAIQAAAAABNAEAAAABATQBAAAAAQE0AAAAJAIBNEAAAAABATRAAAAAAQAAAAADFQAGFgAHFwAIAAAAAxUABhYABxcACAECAQIDAQUGAQYHAQcIAQkKAQoMAgsNAwwPAQ0RAg4SBBETARIUARMVAhgYBRkZCQ"
 }
 
 async function decodeBase64AsWasm(wasmBase64: string): Promise<WebAssembly.Module> {
@@ -70,8 +70,8 @@ export interface PrismaClientConstructor {
    * const prisma = new PrismaClient({
    *   adapter: new PrismaPg({ connectionString: process.env.DATABASE_URL })
    * })
-   * // Fetch zero or more Users
-   * const users = await prisma.user.findMany()
+   * // Fetch zero or more Tenants
+   * const tenants = await prisma.tenant.findMany()
    * ```
    * 
    * Read more in our [docs](https://pris.ly/d/client).
@@ -94,8 +94,8 @@ export interface PrismaClientConstructor {
  * const prisma = new PrismaClient({
  *   adapter: new PrismaPg({ connectionString: process.env.DATABASE_URL })
  * })
- * // Fetch zero or more Users
- * const users = await prisma.user.findMany()
+ * // Fetch zero or more Tenants
+ * const tenants = await prisma.tenant.findMany()
  * ```
  * 
  * Read more in our [docs](https://pris.ly/d/client).
@@ -188,7 +188,15 @@ export interface PrismaClient<
     extArgs: ExtArgs
   }>>
 
-    
+      /**
+   * `prisma.tenant`: Exposes CRUD operations for the **Tenant** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Tenants
+    * const tenants = await prisma.tenant.findMany()
+    * ```
+    */
+  get tenant(): Prisma.TenantDelegate<ExtArgs, { omit: OmitOpts }>;
 }
 
 export function getPrismaClientClass(): PrismaClientConstructor {
