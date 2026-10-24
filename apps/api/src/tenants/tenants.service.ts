@@ -12,36 +12,21 @@ export class TenantsService {
   async create(createTenantDto: CreateTenantDto) {
     return this.prisma.tenant.create({
       data: {
-        companyName: createTenantDto.companyName,
         slug: createTenantDto.slug,
-        contactName: createTenantDto.contactName,
-        email: createTenantDto.email,
-        phone: createTenantDto.phone,
-      },
-      select: {
-        id: true,
-        companyName: true,
-        slug: true,
-        contactName: true,
-        email: true,
-        phone: true,
-        status: true,
-        createdAt: true,
-      },
+        name: createTenantDto.name,
+  },
     });
   }
 
+//select: veritabanındna dönen sonuçta hangi alanların gösterileceğini belirler
 
 //Veritabanında kayıtlı tenantları(şirketleri) listeler  
 async findAll() {
   return this.prisma.tenant.findMany({
     select: {
       id: true,
-      companyName: true,
+      name: true,
       slug: true,
-      contactName: true,
-      email: true,
-      phone: true,
       status: true,
       createdAt: true,
     },

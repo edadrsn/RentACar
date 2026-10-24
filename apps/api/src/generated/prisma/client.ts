@@ -44,3 +44,8 @@ export { Prisma }
  * 
  */
 export type Tenant = Prisma.TenantModel
+/**
+ * Model TenantApplication
+ * 
+ */
+export type TenantApplication = Prisma.TenantApplicationModel

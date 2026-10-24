@@ -8,15 +8,11 @@ import { CreateTenantDto } from './dto/create-tenant.dto';
 @Controller('tenants')  //temel url tenants
 export class TenantsController {
   constructor(private readonly tenantsService: TenantsService) {}
-  // export: Başka dosyaların bu sınıfı içe aktarabilmesini sağlar.
 
   //Veritabanında kayıtlı şirketleri listeler
   @Get()
   @ApiOperation({ summary: 'Tüm şirketleri listele'})
-  @ApiResponse({
-    status: 200,
-    description: 'Tüm şirketler başarıyla listelendi'
-  })
+  @ApiResponse({  status: 200, description: 'Tüm şirketler başarıyla listelendi' })
   findAll() {
     return this.tenantsService.findAll();
   }
@@ -24,14 +20,8 @@ export class TenantsController {
   //Yeni şirket oluştur
   @Post()
   @ApiOperation({ summary: 'Yeni şirket oluştur'})
-  @ApiResponse({
-    status: 201,
-    description: 'Yeni şirket başarıyla oluşturuldu'
-  })
-  @ApiResponse({
-    status: 400,
-    description: 'Geçersiz veriler. Gönderilen verleri kontrol edin'
-  })
+  @ApiResponse({ status: 201, description: 'Yeni şirket başarıyla oluşturuldu'})
+  @ApiResponse({ status: 400, description: 'Geçersiz veriler. Gönderilen verleri kontrol edin' })
   create(@Body() createTenantDto: CreateTenantDto) {
     return this.tenantsService.create(createTenantDto);
   }

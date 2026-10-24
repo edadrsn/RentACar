@@ -397,7 +397,8 @@ type FieldRefInputType<Model, FieldType> = Model extends never ? never : FieldRe
 
 
 export const ModelName = {
-  Tenant: 'Tenant'
+  Tenant: 'Tenant',
+  TenantApplication: 'TenantApplication'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -413,7 +414,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "tenant"
+    modelProps: "tenant" | "tenantApplication"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -491,6 +492,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    TenantApplication: {
+      payload: Prisma.$TenantApplicationPayload<ExtArgs>
+      fields: Prisma.TenantApplicationFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.TenantApplicationFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TenantApplicationPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.TenantApplicationFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TenantApplicationPayload>
+        }
+        findFirst: {
+          args: Prisma.TenantApplicationFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TenantApplicationPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.TenantApplicationFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TenantApplicationPayload>
+        }
+        findMany: {
+          args: Prisma.TenantApplicationFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TenantApplicationPayload>[]
+        }
+        create: {
+          args: Prisma.TenantApplicationCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TenantApplicationPayload>
+        }
+        createMany: {
+          args: Prisma.TenantApplicationCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.TenantApplicationCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TenantApplicationPayload>[]
+        }
+        delete: {
+          args: Prisma.TenantApplicationDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TenantApplicationPayload>
+        }
+        update: {
+          args: Prisma.TenantApplicationUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TenantApplicationPayload>
+        }
+        deleteMany: {
+          args: Prisma.TenantApplicationDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.TenantApplicationUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.TenantApplicationUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TenantApplicationPayload>[]
+        }
+        upsert: {
+          args: Prisma.TenantApplicationUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TenantApplicationPayload>
+        }
+        aggregate: {
+          args: Prisma.TenantApplicationAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateTenantApplication>
+        }
+        groupBy: {
+          args: Prisma.TenantApplicationGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.TenantApplicationGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.TenantApplicationCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.TenantApplicationCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -532,19 +607,30 @@ export type TransactionIsolationLevel = (typeof TransactionIsolationLevel)[keyof
 
 export const TenantScalarFieldEnum = {
   id: 'id',
-  companyName: 'companyName',
+  name: 'name',
   slug: 'slug',
-  contactName: 'contactName',
-  email: 'email',
-  phone: 'phone',
   status: 'status',
-  rejectionReason: 'rejectionReason',
-  approvedAt: 'approvedAt',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
 
 export type TenantScalarFieldEnum = (typeof TenantScalarFieldEnum)[keyof typeof TenantScalarFieldEnum]
+
+
+export const TenantApplicationScalarFieldEnum = {
+  id: 'id',
+  companyName: 'companyName',
+  slug: 'slug',
+  contactName: 'contactName',
+  contactEmail: 'contactEmail',
+  contactPhone: 'contactPhone',
+  status: 'status',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  tenantId: 'tenantId'
+} as const
+
+export type TenantApplicationScalarFieldEnum = (typeof TenantApplicationScalarFieldEnum)[keyof typeof TenantApplicationScalarFieldEnum]
 
 
 export const SortOrder = {
@@ -616,6 +702,20 @@ export type DateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel
  * Reference to a field of type 'DateTime[]'
  */
 export type ListDateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DateTime[]'>
+    
+
+
+/**
+ * Reference to a field of type 'TenantApplicationStatus'
+ */
+export type EnumTenantApplicationStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'TenantApplicationStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'TenantApplicationStatus[]'
+ */
+export type ListEnumTenantApplicationStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'TenantApplicationStatus[]'>
     
 
 
@@ -784,6 +884,7 @@ export interface PrismaClientOptionsWithAdapter extends PrismaClientBaseOptions 
 export type PrismaClientOptions = PrismaClientOptionsWithAccelerateUrl | PrismaClientOptionsWithAdapter
 export type GlobalOmitConfig = {
   tenant?: Prisma.TenantOmit
+  tenantApplication?: Prisma.TenantApplicationOmit
 }
 
 /* Types for Logging */

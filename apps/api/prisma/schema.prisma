@@ -13,24 +13,43 @@ datasource db {
   provider = "postgresql"
 }
 
-enum TenantStatus {
+enum TenantStatus{
   PENDING
   APPROVED
   REJECTED
 }
 
+enum TenantApplicationStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+//Platforma kabul edilen şirketin kaydı
 model Tenant {
   id             String       @id @default(cuid())   //her kiracı için benzersiz id
-  companyName    String
-  slug           String       @unique                //şirketleri url veya alt alan adı ile tanımlamamızı sağlar
-  contactName    String
-  email          String
-  phone          String?
-  status         TenantStatus @default(PENDING)     //şirketlerin başvuru durumlarını tutar
-  rejectionReason String?                           //başvurunun reddedilme nedeni 
-  approvedAt     DateTime?                          //başvurunun onaylanma zamanı
-  createdAt      DateTime     @default(now())       //başvuru kaydının oluşturulduğu zaman
-  updatedAt      DateTime     @updatedAt            //son güncelleme zamanı
+  name           String
+  slug           String       @unique
+  status         TenantStatus @default(PENDING)
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
 
-  @@index([status, createdAt])
+  application TenantApplication?
+
+}
+
+//Şirketlerin başvuru yapmak için gönderdiği başvurular
+model TenantApplication{
+  id            String                  @id @default(cuid())
+  companyName   String
+  slug          String
+  contactName   String
+  contactEmail  String
+  contactPhone  String
+  status        TenantApplicationStatus @default(PENDING)
+  createdAt     DateTime                @default(now())
+  updatedAt     DateTime                @updatedAt
+
+  tenantId      String?                 @unique
+  tenant        Tenant?                 @relation(fields: [tenantId], references: [id])
 }

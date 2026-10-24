@@ -51,7 +51,8 @@ export const AnyNull = runtime.AnyNull
 
 
 export const ModelName = {
-  Tenant: 'Tenant'
+  Tenant: 'Tenant',
+  TenantApplication: 'TenantApplication'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -72,19 +73,30 @@ export type TransactionIsolationLevel = (typeof TransactionIsolationLevel)[keyof
 
 export const TenantScalarFieldEnum = {
   id: 'id',
-  companyName: 'companyName',
+  name: 'name',
   slug: 'slug',
-  contactName: 'contactName',
-  email: 'email',
-  phone: 'phone',
   status: 'status',
-  rejectionReason: 'rejectionReason',
-  approvedAt: 'approvedAt',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
 
 export type TenantScalarFieldEnum = (typeof TenantScalarFieldEnum)[keyof typeof TenantScalarFieldEnum]
+
+
+export const TenantApplicationScalarFieldEnum = {
+  id: 'id',
+  companyName: 'companyName',
+  slug: 'slug',
+  contactName: 'contactName',
+  contactEmail: 'contactEmail',
+  contactPhone: 'contactPhone',
+  status: 'status',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  tenantId: 'tenantId'
+} as const
+
+export type TenantApplicationScalarFieldEnum = (typeof TenantApplicationScalarFieldEnum)[keyof typeof TenantApplicationScalarFieldEnum]
 
 
 export const SortOrder = {

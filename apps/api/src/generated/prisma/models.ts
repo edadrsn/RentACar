@@ -9,4 +9,5 @@
  * 🟢 You can import this file directly.
  */
 export type * from './models/Tenant.js'
+export type * from './models/TenantApplication.js'
 export type * from './commonInputTypes.js'

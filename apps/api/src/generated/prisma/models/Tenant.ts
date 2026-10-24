@@ -26,42 +26,27 @@ export type AggregateTenant = {
 
 export type TenantMinAggregateOutputType = {
   id: string | null
-  companyName: string | null
+  name: string | null
   slug: string | null
-  contactName: string | null
-  email: string | null
-  phone: string | null
   status: $Enums.TenantStatus | null
-  rejectionReason: string | null
-  approvedAt: Date | null
   createdAt: Date | null
   updatedAt: Date | null
 }
 
 export type TenantMaxAggregateOutputType = {
   id: string | null
-  companyName: string | null
+  name: string | null
   slug: string | null
-  contactName: string | null
-  email: string | null
-  phone: string | null
   status: $Enums.TenantStatus | null
-  rejectionReason: string | null
-  approvedAt: Date | null
   createdAt: Date | null
   updatedAt: Date | null
 }
 
 export type TenantCountAggregateOutputType = {
   id: number
-  companyName: number
+  name: number
   slug: number
-  contactName: number
-  email: number
-  phone: number
   status: number
-  rejectionReason: number
-  approvedAt: number
   createdAt: number
   updatedAt: number
   _all: number
@@ -70,42 +55,27 @@ export type TenantCountAggregateOutputType = {
 
 export type TenantMinAggregateInputType = {
   id?: true
-  companyName?: true
+  name?: true
   slug?: true
-  contactName?: true
-  email?: true
-  phone?: true
   status?: true
-  rejectionReason?: true
-  approvedAt?: true
   createdAt?: true
   updatedAt?: true
 }
 
 export type TenantMaxAggregateInputType = {
   id?: true
-  companyName?: true
+  name?: true
   slug?: true
-  contactName?: true
-  email?: true
-  phone?: true
   status?: true
-  rejectionReason?: true
-  approvedAt?: true
   createdAt?: true
   updatedAt?: true
 }
 
 export type TenantCountAggregateInputType = {
   id?: true
-  companyName?: true
+  name?: true
   slug?: true
-  contactName?: true
-  email?: true
-  phone?: true
   status?: true
-  rejectionReason?: true
-  approvedAt?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -185,14 +155,9 @@ export type TenantGroupByArgs<ExtArgs extends runtime.Types.Extensions.InternalA
 
 export type TenantGroupByOutputType = {
   id: string
-  companyName: string
+  name: string
   slug: string
-  contactName: string
-  email: string
-  phone: string | null
   status: $Enums.TenantStatus
-  rejectionReason: string | null
-  approvedAt: Date | null
   createdAt: Date
   updatedAt: Date
   _count: TenantCountAggregateOutputType | null
@@ -220,30 +185,22 @@ export type TenantWhereInput = {
   OR?: Prisma.TenantWhereInput[]
   NOT?: Prisma.TenantWhereInput | Prisma.TenantWhereInput[]
   id?: Prisma.StringFilter<"Tenant"> | string
-  companyName?: Prisma.StringFilter<"Tenant"> | string
+  name?: Prisma.StringFilter<"Tenant"> | string
   slug?: Prisma.StringFilter<"Tenant"> | string
-  contactName?: Prisma.StringFilter<"Tenant"> | string
-  email?: Prisma.StringFilter<"Tenant"> | string
-  phone?: Prisma.StringNullableFilter<"Tenant"> | string | null
   status?: Prisma.EnumTenantStatusFilter<"Tenant"> | $Enums.TenantStatus
-  rejectionReason?: Prisma.StringNullableFilter<"Tenant"> | string | null
-  approvedAt?: Prisma.DateTimeNullableFilter<"Tenant"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"Tenant"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Tenant"> | Date | string
+  application?: Prisma.XOR<Prisma.TenantApplicationNullableScalarRelationFilter, Prisma.TenantApplicationWhereInput> | null
 }
 
 export type TenantOrderByWithRelationInput = {
   id?: Prisma.SortOrder
-  companyName?: Prisma.SortOrder
+  name?: Prisma.SortOrder
   slug?: Prisma.SortOrder
-  contactName?: Prisma.SortOrder
-  email?: Prisma.SortOrder
-  phone?: Prisma.SortOrderInput | Prisma.SortOrder
   status?: Prisma.SortOrder
-  rejectionReason?: Prisma.SortOrderInput | Prisma.SortOrder
-  approvedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  application?: Prisma.TenantApplicationOrderByWithRelationInput
 }
 
 export type TenantWhereUniqueInput = Prisma.AtLeast<{
@@ -252,27 +209,18 @@ export type TenantWhereUniqueInput = Prisma.AtLeast<{
   AND?: Prisma.TenantWhereInput | Prisma.TenantWhereInput[]
   OR?: Prisma.TenantWhereInput[]
   NOT?: Prisma.TenantWhereInput | Prisma.TenantWhereInput[]
-  companyName?: Prisma.StringFilter<"Tenant"> | string
-  contactName?: Prisma.StringFilter<"Tenant"> | string
-  email?: Prisma.StringFilter<"Tenant"> | string
-  phone?: Prisma.StringNullableFilter<"Tenant"> | string | null
+  name?: Prisma.StringFilter<"Tenant"> | string
   status?: Prisma.EnumTenantStatusFilter<"Tenant"> | $Enums.TenantStatus
-  rejectionReason?: Prisma.StringNullableFilter<"Tenant"> | string | null
-  approvedAt?: Prisma.DateTimeNullableFilter<"Tenant"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"Tenant"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Tenant"> | Date | string
+  application?: Prisma.XOR<Prisma.TenantApplicationNullableScalarRelationFilter, Prisma.TenantApplicationWhereInput> | null
 }, "id" | "slug">
 
 export type TenantOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
-  companyName?: Prisma.SortOrder
+  name?: Prisma.SortOrder
   slug?: Prisma.SortOrder
-  contactName?: Prisma.SortOrder
-  email?: Prisma.SortOrder
-  phone?: Prisma.SortOrderInput | Prisma.SortOrder
   status?: Prisma.SortOrder
-  rejectionReason?: Prisma.SortOrderInput | Prisma.SortOrder
-  approvedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.TenantCountOrderByAggregateInput
@@ -285,251 +233,248 @@ export type TenantScalarWhereWithAggregatesInput = {
   OR?: Prisma.TenantScalarWhereWithAggregatesInput[]
   NOT?: Prisma.TenantScalarWhereWithAggregatesInput | Prisma.TenantScalarWhereWithAggregatesInput[]
   id?: Prisma.StringWithAggregatesFilter<"Tenant"> | string
-  companyName?: Prisma.StringWithAggregatesFilter<"Tenant"> | string
+  name?: Prisma.StringWithAggregatesFilter<"Tenant"> | string
   slug?: Prisma.StringWithAggregatesFilter<"Tenant"> | string
-  contactName?: Prisma.StringWithAggregatesFilter<"Tenant"> | string
-  email?: Prisma.StringWithAggregatesFilter<"Tenant"> | string
-  phone?: Prisma.StringNullableWithAggregatesFilter<"Tenant"> | string | null
   status?: Prisma.EnumTenantStatusWithAggregatesFilter<"Tenant"> | $Enums.TenantStatus
-  rejectionReason?: Prisma.StringNullableWithAggregatesFilter<"Tenant"> | string | null
-  approvedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Tenant"> | Date | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Tenant"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Tenant"> | Date | string
 }
 
 export type TenantCreateInput = {
   id?: string
-  companyName: string
+  name: string
   slug: string
-  contactName: string
-  email: string
-  phone?: string | null
   status?: $Enums.TenantStatus
-  rejectionReason?: string | null
-  approvedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  application?: Prisma.TenantApplicationCreateNestedOneWithoutTenantInput
 }
 
 export type TenantUncheckedCreateInput = {
   id?: string
-  companyName: string
+  name: string
   slug: string
-  contactName: string
-  email: string
-  phone?: string | null
   status?: $Enums.TenantStatus
-  rejectionReason?: string | null
-  approvedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  application?: Prisma.TenantApplicationUncheckedCreateNestedOneWithoutTenantInput
 }
 
 export type TenantUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  companyName?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
-  contactName?: Prisma.StringFieldUpdateOperationsInput | string
-  email?: Prisma.StringFieldUpdateOperationsInput | string
-  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumTenantStatusFieldUpdateOperationsInput | $Enums.TenantStatus
-  rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  application?: Prisma.TenantApplicationUpdateOneWithoutTenantNestedInput
 }
 
 export type TenantUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  companyName?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
-  contactName?: Prisma.StringFieldUpdateOperationsInput | string
-  email?: Prisma.StringFieldUpdateOperationsInput | string
-  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumTenantStatusFieldUpdateOperationsInput | $Enums.TenantStatus
-  rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  application?: Prisma.TenantApplicationUncheckedUpdateOneWithoutTenantNestedInput
 }
 
 export type TenantCreateManyInput = {
   id?: string
-  companyName: string
+  name: string
   slug: string
-  contactName: string
-  email: string
-  phone?: string | null
   status?: $Enums.TenantStatus
-  rejectionReason?: string | null
-  approvedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
 
 export type TenantUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  companyName?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
-  contactName?: Prisma.StringFieldUpdateOperationsInput | string
-  email?: Prisma.StringFieldUpdateOperationsInput | string
-  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumTenantStatusFieldUpdateOperationsInput | $Enums.TenantStatus
-  rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type TenantUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  companyName?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
-  contactName?: Prisma.StringFieldUpdateOperationsInput | string
-  email?: Prisma.StringFieldUpdateOperationsInput | string
-  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumTenantStatusFieldUpdateOperationsInput | $Enums.TenantStatus
-  rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type TenantCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
-  companyName?: Prisma.SortOrder
+  name?: Prisma.SortOrder
   slug?: Prisma.SortOrder
-  contactName?: Prisma.SortOrder
-  email?: Prisma.SortOrder
-  phone?: Prisma.SortOrder
   status?: Prisma.SortOrder
-  rejectionReason?: Prisma.SortOrder
-  approvedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
 
 export type TenantMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
-  companyName?: Prisma.SortOrder
+  name?: Prisma.SortOrder
   slug?: Prisma.SortOrder
-  contactName?: Prisma.SortOrder
-  email?: Prisma.SortOrder
-  phone?: Prisma.SortOrder
   status?: Prisma.SortOrder
-  rejectionReason?: Prisma.SortOrder
-  approvedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
 
 export type TenantMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
-  companyName?: Prisma.SortOrder
+  name?: Prisma.SortOrder
   slug?: Prisma.SortOrder
-  contactName?: Prisma.SortOrder
-  email?: Prisma.SortOrder
-  phone?: Prisma.SortOrder
   status?: Prisma.SortOrder
-  rejectionReason?: Prisma.SortOrder
-  approvedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+}
+
+export type TenantNullableScalarRelationFilter = {
+  is?: Prisma.TenantWhereInput | null
+  isNot?: Prisma.TenantWhereInput | null
 }
 
 export type StringFieldUpdateOperationsInput = {
   set?: string
 }
 
-export type NullableStringFieldUpdateOperationsInput = {
-  set?: string | null
-}
-
 export type EnumTenantStatusFieldUpdateOperationsInput = {
   set?: $Enums.TenantStatus
-}
-
-export type NullableDateTimeFieldUpdateOperationsInput = {
-  set?: Date | string | null
 }
 
 export type DateTimeFieldUpdateOperationsInput = {
   set?: Date | string
 }
 
+export type TenantCreateNestedOneWithoutApplicationInput = {
+  create?: Prisma.XOR<Prisma.TenantCreateWithoutApplicationInput, Prisma.TenantUncheckedCreateWithoutApplicationInput>
+  connectOrCreate?: Prisma.TenantCreateOrConnectWithoutApplicationInput
+  connect?: Prisma.TenantWhereUniqueInput
+}
+
+export type TenantUpdateOneWithoutApplicationNestedInput = {
+  create?: Prisma.XOR<Prisma.TenantCreateWithoutApplicationInput, Prisma.TenantUncheckedCreateWithoutApplicationInput>
+  connectOrCreate?: Prisma.TenantCreateOrConnectWithoutApplicationInput
+  upsert?: Prisma.TenantUpsertWithoutApplicationInput
+  disconnect?: Prisma.TenantWhereInput | boolean
+  delete?: Prisma.TenantWhereInput | boolean
+  connect?: Prisma.TenantWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.TenantUpdateToOneWithWhereWithoutApplicationInput, Prisma.TenantUpdateWithoutApplicationInput>, Prisma.TenantUncheckedUpdateWithoutApplicationInput>
+}
+
+export type TenantCreateWithoutApplicationInput = {
+  id?: string
+  name: string
+  slug: string
+  status?: $Enums.TenantStatus
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type TenantUncheckedCreateWithoutApplicationInput = {
+  id?: string
+  name: string
+  slug: string
+  status?: $Enums.TenantStatus
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type TenantCreateOrConnectWithoutApplicationInput = {
+  where: Prisma.TenantWhereUniqueInput
+  create: Prisma.XOR<Prisma.TenantCreateWithoutApplicationInput, Prisma.TenantUncheckedCreateWithoutApplicationInput>
+}
+
+export type TenantUpsertWithoutApplicationInput = {
+  update: Prisma.XOR<Prisma.TenantUpdateWithoutApplicationInput, Prisma.TenantUncheckedUpdateWithoutApplicationInput>
+  create: Prisma.XOR<Prisma.TenantCreateWithoutApplicationInput, Prisma.TenantUncheckedCreateWithoutApplicationInput>
+  where?: Prisma.TenantWhereInput
+}
+
+export type TenantUpdateToOneWithWhereWithoutApplicationInput = {
+  where?: Prisma.TenantWhereInput
+  data: Prisma.XOR<Prisma.TenantUpdateWithoutApplicationInput, Prisma.TenantUncheckedUpdateWithoutApplicationInput>
+}
+
+export type TenantUpdateWithoutApplicationInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumTenantStatusFieldUpdateOperationsInput | $Enums.TenantStatus
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type TenantUncheckedUpdateWithoutApplicationInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumTenantStatusFieldUpdateOperationsInput | $Enums.TenantStatus
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
 
 
 export type TenantSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
-  companyName?: boolean
+  name?: boolean
   slug?: boolean
-  contactName?: boolean
-  email?: boolean
-  phone?: boolean
   status?: boolean
-  rejectionReason?: boolean
-  approvedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  application?: boolean | Prisma.Tenant$applicationArgs<ExtArgs>
 }, ExtArgs["result"]["tenant"]>
 
 export type TenantSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
-  companyName?: boolean
+  name?: boolean
   slug?: boolean
-  contactName?: boolean
-  email?: boolean
-  phone?: boolean
   status?: boolean
-  rejectionReason?: boolean
-  approvedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }, ExtArgs["result"]["tenant"]>
 
 export type TenantSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
-  companyName?: boolean
+  name?: boolean
   slug?: boolean
-  contactName?: boolean
-  email?: boolean
-  phone?: boolean
   status?: boolean
-  rejectionReason?: boolean
-  approvedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }, ExtArgs["result"]["tenant"]>
 
 export type TenantSelectScalar = {
   id?: boolean
-  companyName?: boolean
+  name?: boolean
   slug?: boolean
-  contactName?: boolean
-  email?: boolean
-  phone?: boolean
   status?: boolean
-  rejectionReason?: boolean
-  approvedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type TenantOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "companyName" | "slug" | "contactName" | "email" | "phone" | "status" | "rejectionReason" | "approvedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["tenant"]>
+export type TenantOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "slug" | "status" | "createdAt" | "updatedAt", ExtArgs["result"]["tenant"]>
+export type TenantInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  application?: boolean | Prisma.Tenant$applicationArgs<ExtArgs>
+}
+export type TenantIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
+export type TenantIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
 
 export type $TenantPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "Tenant"
-  objects: {}
+  objects: {
+    application: Prisma.$TenantApplicationPayload<ExtArgs> | null
+  }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
-    companyName: string
+    name: string
     slug: string
-    contactName: string
-    email: string
-    phone: string | null
     status: $Enums.TenantStatus
-    rejectionReason: string | null
-    approvedAt: Date | null
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["tenant"]>
@@ -926,6 +871,7 @@ readonly fields: TenantFieldRefs;
  */
 export interface Prisma__TenantClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
+  application<T extends Prisma.Tenant$applicationArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Tenant$applicationArgs<ExtArgs>>): Prisma.Prisma__TenantApplicationClient<runtime.Types.Result.GetResult<Prisma.$TenantApplicationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -956,14 +902,9 @@ export interface Prisma__TenantClient<T, Null = never, ExtArgs extends runtime.T
  */
 export interface TenantFieldRefs {
   readonly id: Prisma.FieldRef<"Tenant", 'String'>
-  readonly companyName: Prisma.FieldRef<"Tenant", 'String'>
+  readonly name: Prisma.FieldRef<"Tenant", 'String'>
   readonly slug: Prisma.FieldRef<"Tenant", 'String'>
-  readonly contactName: Prisma.FieldRef<"Tenant", 'String'>
-  readonly email: Prisma.FieldRef<"Tenant", 'String'>
-  readonly phone: Prisma.FieldRef<"Tenant", 'String'>
   readonly status: Prisma.FieldRef<"Tenant", 'TenantStatus'>
-  readonly rejectionReason: Prisma.FieldRef<"Tenant", 'String'>
-  readonly approvedAt: Prisma.FieldRef<"Tenant", 'DateTime'>
   readonly createdAt: Prisma.FieldRef<"Tenant", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Tenant", 'DateTime'>
 }
@@ -983,6 +924,10 @@ export type TenantFindUniqueArgs<ExtArgs extends runtime.Types.Extensions.Intern
    */
   omit?: Prisma.TenantOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.TenantInclude<ExtArgs> | null
+  /**
    * Filter, which Tenant to fetch.
    */
   where: Prisma.TenantWhereUniqueInput
@@ -1001,6 +946,10 @@ export type TenantFindUniqueOrThrowArgs<ExtArgs extends runtime.Types.Extensions
    */
   omit?: Prisma.TenantOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.TenantInclude<ExtArgs> | null
+  /**
    * Filter, which Tenant to fetch.
    */
   where: Prisma.TenantWhereUniqueInput
@@ -1018,6 +967,10 @@ export type TenantFindFirstArgs<ExtArgs extends runtime.Types.Extensions.Interna
    * Omit specific fields from the Tenant
    */
   omit?: Prisma.TenantOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.TenantInclude<ExtArgs> | null
   /**
    * Filter, which Tenant to fetch.
    */
@@ -1067,6 +1020,10 @@ export type TenantFindFirstOrThrowArgs<ExtArgs extends runtime.Types.Extensions.
    */
   omit?: Prisma.TenantOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.TenantInclude<ExtArgs> | null
+  /**
    * Filter, which Tenant to fetch.
    */
   where?: Prisma.TenantWhereInput
@@ -1114,6 +1071,10 @@ export type TenantFindManyArgs<ExtArgs extends runtime.Types.Extensions.Internal
    * Omit specific fields from the Tenant
    */
   omit?: Prisma.TenantOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.TenantInclude<ExtArgs> | null
   /**
    * Filter, which Tenants to fetch.
    */
@@ -1163,6 +1124,10 @@ export type TenantCreateArgs<ExtArgs extends runtime.Types.Extensions.InternalAr
    */
   omit?: Prisma.TenantOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.TenantInclude<ExtArgs> | null
+  /**
    * The data needed to create a Tenant.
    */
   data: Prisma.XOR<Prisma.TenantCreateInput, Prisma.TenantUncheckedCreateInput>
@@ -1210,6 +1175,10 @@ export type TenantUpdateArgs<ExtArgs extends runtime.Types.Extensions.InternalAr
    * Omit specific fields from the Tenant
    */
   omit?: Prisma.TenantOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.TenantInclude<ExtArgs> | null
   /**
    * The data needed to update a Tenant.
    */
@@ -1277,6 +1246,10 @@ export type TenantUpsertArgs<ExtArgs extends runtime.Types.Extensions.InternalAr
    */
   omit?: Prisma.TenantOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.TenantInclude<ExtArgs> | null
+  /**
    * The filter to search for the Tenant to update in case it exists.
    */
   where: Prisma.TenantWhereUniqueInput
@@ -1303,6 +1276,10 @@ export type TenantDeleteArgs<ExtArgs extends runtime.Types.Extensions.InternalAr
    */
   omit?: Prisma.TenantOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.TenantInclude<ExtArgs> | null
+  /**
    * Filter which Tenant to delete.
    */
   where: Prisma.TenantWhereUniqueInput
@@ -1323,6 +1300,25 @@ export type TenantDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.Intern
 }
 
 /**
+ * Tenant.application
+ */
+export type Tenant$applicationArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the TenantApplication
+   */
+  select?: Prisma.TenantApplicationSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the TenantApplication
+   */
+  omit?: Prisma.TenantApplicationOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.TenantApplicationInclude<ExtArgs> | null
+  where?: Prisma.TenantApplicationWhereInput
+}
+
+/**
  * Tenant without action
  */
 export type TenantDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1334,4 +1330,8 @@ export type TenantDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalA
    * Omit specific fields from the Tenant
    */
   omit?: Prisma.TenantOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.TenantInclude<ExtArgs> | null
 }
