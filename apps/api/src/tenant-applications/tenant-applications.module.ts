@@ -1,8 +1,10 @@
 import { Module } from '@nestjs/common';
 import { TenantApplicationsController } from './tenant-applications.controller';
 import { TenantApplicationsService } from './tenant-applications.service';
+import { PrismaModule } from '../prisma/prisma.module.js';
 
 @Module({
+  imports: [PrismaModule],
   controllers: [TenantApplicationsController],
   providers: [TenantApplicationsService],
 })
