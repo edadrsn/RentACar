@@ -27,3 +27,8 @@ export type Tenant = Prisma.TenantModel
  * 
  */
 export type TenantApplication = Prisma.TenantApplicationModel
+/**
+ * Model PlatformAdmin
+ * 
+ */
+export type PlatformAdmin = Prisma.PlatformAdminModel

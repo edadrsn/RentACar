@@ -52,7 +52,8 @@ export const AnyNull = runtime.AnyNull
 
 export const ModelName = {
   Tenant: 'Tenant',
-  TenantApplication: 'TenantApplication'
+  TenantApplication: 'TenantApplication',
+  PlatformAdmin: 'PlatformAdmin'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -97,6 +98,17 @@ export const TenantApplicationScalarFieldEnum = {
 } as const
 
 export type TenantApplicationScalarFieldEnum = (typeof TenantApplicationScalarFieldEnum)[keyof typeof TenantApplicationScalarFieldEnum]
+
+
+export const PlatformAdminScalarFieldEnum = {
+  id: 'id',
+  email: 'email',
+  passwordHash: 'passwordHash',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type PlatformAdminScalarFieldEnum = (typeof PlatformAdminScalarFieldEnum)[keyof typeof PlatformAdminScalarFieldEnum]
 
 
 export const SortOrder = {

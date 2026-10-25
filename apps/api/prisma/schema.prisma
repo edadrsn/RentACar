@@ -53,3 +53,15 @@ model TenantApplication{
   tenantId      String?                 @unique
   tenant        Tenant?                 @relation(fields: [tenantId], references: [id])
 }
+
+
+//Rentacar platform yöneticileri
+model PlatformAdmin{
+  id           String   @id @default(cuid())
+  email        String   @unique
+  passwordHash String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+//passwordHash: kullanıcının şifresinin güvenli bir algoritmayladönüştürülmüş halidir

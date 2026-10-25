@@ -5,7 +5,7 @@ import { AppService } from './app.service';
 import { TenantsModule } from './tenants/tenants.module';
 import { PrismaModule } from './prisma/prisma.module';
 import { TenantApplicationsModule } from './tenant-applications/tenant-applications.module';
-
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -16,6 +16,7 @@ import { TenantApplicationsModule } from './tenant-applications/tenant-applicati
     TenantsModule,
     PrismaModule,
     TenantApplicationsModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],

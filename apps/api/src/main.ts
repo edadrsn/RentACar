@@ -21,6 +21,14 @@ async function bootstrap() {
     .setTitle('RentACar API')
     .setDescription('RentACar platformunun REST API dokümantasyonu')
     .setVersion('1.0')
+      .addBearerAuth(
+    {
+      type: 'http',
+      scheme: 'bearer',
+      bearerFormat: 'JWT',
+    },
+    'bearer',
+  )
     .build();
 
   const document = SwaggerModule.createDocument(app, config);

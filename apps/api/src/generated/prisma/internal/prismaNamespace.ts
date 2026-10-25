@@ -398,7 +398,8 @@ type FieldRefInputType<Model, FieldType> = Model extends never ? never : FieldRe
 
 export const ModelName = {
   Tenant: 'Tenant',
-  TenantApplication: 'TenantApplication'
+  TenantApplication: 'TenantApplication',
+  PlatformAdmin: 'PlatformAdmin'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -414,7 +415,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "tenant" | "tenantApplication"
+    modelProps: "tenant" | "tenantApplication" | "platformAdmin"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -566,6 +567,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    PlatformAdmin: {
+      payload: Prisma.$PlatformAdminPayload<ExtArgs>
+      fields: Prisma.PlatformAdminFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.PlatformAdminFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PlatformAdminPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.PlatformAdminFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PlatformAdminPayload>
+        }
+        findFirst: {
+          args: Prisma.PlatformAdminFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PlatformAdminPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.PlatformAdminFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PlatformAdminPayload>
+        }
+        findMany: {
+          args: Prisma.PlatformAdminFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PlatformAdminPayload>[]
+        }
+        create: {
+          args: Prisma.PlatformAdminCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PlatformAdminPayload>
+        }
+        createMany: {
+          args: Prisma.PlatformAdminCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.PlatformAdminCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PlatformAdminPayload>[]
+        }
+        delete: {
+          args: Prisma.PlatformAdminDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PlatformAdminPayload>
+        }
+        update: {
+          args: Prisma.PlatformAdminUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PlatformAdminPayload>
+        }
+        deleteMany: {
+          args: Prisma.PlatformAdminDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.PlatformAdminUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.PlatformAdminUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PlatformAdminPayload>[]
+        }
+        upsert: {
+          args: Prisma.PlatformAdminUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PlatformAdminPayload>
+        }
+        aggregate: {
+          args: Prisma.PlatformAdminAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregatePlatformAdmin>
+        }
+        groupBy: {
+          args: Prisma.PlatformAdminGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.PlatformAdminGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.PlatformAdminCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.PlatformAdminCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -631,6 +706,17 @@ export const TenantApplicationScalarFieldEnum = {
 } as const
 
 export type TenantApplicationScalarFieldEnum = (typeof TenantApplicationScalarFieldEnum)[keyof typeof TenantApplicationScalarFieldEnum]
+
+
+export const PlatformAdminScalarFieldEnum = {
+  id: 'id',
+  email: 'email',
+  passwordHash: 'passwordHash',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type PlatformAdminScalarFieldEnum = (typeof PlatformAdminScalarFieldEnum)[keyof typeof PlatformAdminScalarFieldEnum]
 
 
 export const SortOrder = {
@@ -885,6 +971,7 @@ export type PrismaClientOptions = PrismaClientOptionsWithAccelerateUrl | PrismaC
 export type GlobalOmitConfig = {
   tenant?: Prisma.TenantOmit
   tenantApplication?: Prisma.TenantApplicationOmit
+  platformAdmin?: Prisma.PlatformAdminOmit
 }
 
 /* Types for Logging */
