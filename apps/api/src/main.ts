@@ -1,39 +1,36 @@
-import { NestFactory } from '@nestjs/core';
-import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
-import { AppModule } from './app.module';
-import { ValidationPipe } from '@nestjs/common';
+//backendi başlatır ve başlangıç ayarlarını yapar
 import 'dotenv/config';
 
-async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+import { NestFactory } from '@nestjs/core';
+import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 
-  app.useGlobalPipes(
-  new ValidationPipe({
-    whitelist: true,
-    forbidNonWhitelisted: true,
-    transform: true,
-  }),
-);
+import { AppModule } from './app.module';
+import { configureApp } from './config/app.config';
 
-  app.setGlobalPrefix('api'); //Tüm endpointler başına /api prefixini ekledik
+async function bootstrap(): Promise<void> {
+  const app = await NestFactory.create(AppModule);  //nestjs uygulamasını oluşturur
 
-  const config = new DocumentBuilder()
+  configureApp(app);   //ortak api ayarlarını uygular
+
+  const config = new DocumentBuilder()   //swagger dokümantasyonunu hazırlar
     .setTitle('RentACar API')
     .setDescription('RentACar platformunun REST API dokümantasyonu')
     .setVersion('1.0')
-      .addBearerAuth(
-    {
-      type: 'http',
-      scheme: 'bearer',
-      bearerFormat: 'JWT',
-    },
-    'bearer',
-  )
+    .addBearerAuth(
+      {
+        type: 'http',
+        scheme: 'bearer',
+        bearerFormat: 'JWT',
+      },
+      'bearer',
+    )
     .build();
 
-  const document = SwaggerModule.createDocument(app, config);
+  const document = SwaggerModule.createDocument(app, config);  //swaggerı erişilebilir hale getirir
+
   SwaggerModule.setup('api/docs', app, document);
 
-  await app.listen(process.env.PORT ?? 3001);
+  await app.listen(process.env.PORT ?? 3001);    //sunucuyu başlatır
 }
+
 void bootstrap();
