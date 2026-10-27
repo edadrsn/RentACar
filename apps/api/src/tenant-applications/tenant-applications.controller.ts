@@ -1,21 +1,27 @@
-import { Body , Controller , Post , } from '@nestjs/common';
-import { ApiOperation, ApiResponse, ApiTags  } from '@nestjs/swagger';
+import { Body , Controller , Post , Get , UseGuards , } from '@nestjs/common';
+import { ApiOperation, ApiResponse, ApiTags , ApiBearerAuth  } from '@nestjs/swagger';
 import { TenantApplicationsService } from './tenant-applications.service';
 import { CreateTenantApplicationDto } from './dto/create-tenant-application.dto';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { PlatformAdminGuard } from '../auth/guards/platform-admin.guard';
 
 @ApiTags('Tenant Applications')
 @Controller('tenant-applications')
 export class TenantApplicationsController {
     constructor(private readonly tenantApplicationsService: TenantApplicationsService, ) {}
 
-    //Tüm şirket başvurularını listeleme
-    /*@Get()
-    @ApiOperation({ summary: ' Tüm şirket başvurularını listele'})
-    @ApiResponse({ status: 200 , description: 'Tüm şirketlerin başvuruları başarıyla listelendi' })
+    @Get()
+    @UseGuards(JwtAuthGuard , PlatformAdminGuard)  //önce jwtyi ardından paltform admin yetkisini kontrol eder
+    @ApiBearerAuth()  //swaggerda bearer tokenle kimlik doğrulaması gerektiğini belirtir
+    @ApiOperation({ summary: 'Tüm şirket başvurularını listele'})
+    @ApiResponse({ status: 200, description: 'Tüm şirket başvuruları başarıyla listelendi'})
+    @ApiResponse({ status: 402, description: 'Kimlik doğrulaması başarısız. Hatalı veya geçersiz token gönderildi.'})
+    @ApiResponse({ status: 403 , description: 'Bu işlem için yetkiniz bulunmamaktadır'})    
     findAll(){
         return this.tenantApplicationsService.findAll();
-    }*/
-
+    }
+    
+  
 
     //Yeni şirket başvurusu oluştur
     @Post()

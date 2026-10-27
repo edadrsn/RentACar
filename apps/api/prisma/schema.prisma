@@ -49,6 +49,9 @@ model TenantApplication{
   status        TenantApplicationStatus @default(PENDING)
   createdAt     DateTime                @default(now())
   updatedAt     DateTime                @updatedAt
+  
+  rejectionReason String?     //başvuru neden reddedildi
+  approvedAt      DateTime?   //başvuru ne zaamn onaylandı
 
   tenantId      String?                 @unique
   tenant        Tenant?                 @relation(fields: [tenantId], references: [id])
