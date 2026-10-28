@@ -1,4 +1,4 @@
-import { Body , Controller , Post , Get , UseGuards , } from '@nestjs/common';
+import { Body , Controller , Post , Get , UseGuards , Param , Patch } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags , ApiBearerAuth  } from '@nestjs/swagger';
 import { TenantApplicationsService } from './tenant-applications.service';
 import { CreateTenantApplicationDto } from './dto/create-tenant-application.dto';
@@ -30,6 +30,21 @@ export class TenantApplicationsController {
     @ApiResponse({ status: 400 , description : 'Geçersiz veriler.  Gönderilen verileri kontrol edin'})
     create(@Body() createTenantApplicationDto: CreateTenantApplicationDto){
         return this.tenantApplicationsService.create(createTenantApplicationDto);
+    }
+    
+
+    //Şirket başvurusunu onaylama ve şirketi platforma kaydetme
+    @Patch(':id/approve')
+    @UseGuards(JwtAuthGuard , PlatformAdminGuard)  //sadece yetkili platform adminin onaylanamasını sağlıyor
+    @ApiBearerAuth()
+    @ApiOperation({ summary: 'Şirket başvurusu başarıyla onaylandı',})
+    @ApiResponse({ status: 200 , description: 'Şirket başvurusu başarıyla onaylandı',})
+    @ApiResponse({ status: 401 , description: 'JWT eksik veya geçersiz',})
+    @ApiResponse({ status: 403 , description: 'Bu işlem için yetkiniz yok',})
+    @ApiResponse({ status: 404 , description : 'Şirket başvurusu bulunamadı',})
+    @ApiResponse({ status : 409 , description: 'Başvuru zaten değerlendirilmiş veya şirket mevcut',})
+    approve(@Param('id') id:string){
+        return this.tenantApplicationsService.approve(id);
     }
 
     

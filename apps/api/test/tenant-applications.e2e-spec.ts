@@ -20,14 +20,24 @@ describe('Tenant Applications (e2e)', () => {
     passwordHash: 'test-password-hash',
   };
 
-  const prismaMock = {
-    platformAdmin: {
-      findUnique: jest.fn(),
-    },
-    tenantApplication: {
-      findMany: jest.fn(),
-    },
-  };
+  
+const prismaMock = {
+  platformAdmin: {
+    findUnique: jest.fn(),
+  },
+  tenantApplication: {
+    findMany: jest.fn(),
+    findUnique: jest.fn(),
+    updateMany: jest.fn(),
+    update: jest.fn(),
+  },
+  tenant: {
+    findUnique: jest.fn(),
+    create: jest.fn(),
+  },
+  $transaction: jest.fn(),
+};
+
 
   beforeAll(async () => {
     const moduleFixture: TestingModule =
@@ -46,12 +56,19 @@ describe('Tenant Applications (e2e)', () => {
     await app.init();
   });
 
-  beforeEach(() => {
-    jest.clearAllMocks();
+  
+beforeEach(() => {
+  jest.clearAllMocks();
 
-    prismaMock.platformAdmin.findUnique.mockResolvedValue(admin);
-    prismaMock.tenantApplication.findMany.mockResolvedValue([]);
-  });
+  prismaMock.platformAdmin.findUnique.mockResolvedValue(admin);
+  prismaMock.tenantApplication.findMany.mockResolvedValue([]);
+
+  prismaMock.$transaction.mockImplementation(
+    async (callback: (tx: typeof prismaMock) => Promise<unknown>) =>
+      callback(prismaMock),
+  );
+});
+
 
   afterAll(async () => {
     await app?.close();
@@ -94,4 +111,108 @@ describe('Tenant Applications (e2e)', () => {
       },
     });
   });
+
+
+  
+it('PATCH approve - missing token returns 401', async () => {
+  await request(app.getHttpServer())
+    .patch('/api/tenant-applications/application-1/approve')
+    .expect(401);
+});
+
+it('PATCH approve - invalid token returns 401', async () => {
+  await request(app.getHttpServer())
+    .patch('/api/tenant-applications/application-1/approve')
+    .set('Authorization', 'Bearer invalid-token')
+    .expect(401);
+});
+
+it('PATCH approve - valid admin approves application', async () => {
+  const configService = app.get(ConfigService);
+  const secret = configService.getOrThrow<string>('JWT_SECRET');
+
+  const token = await jwtService.signAsync(
+    { sub: admin.id, role: 'PLATFORM_ADMIN' },
+    { secret },
+  );
+
+  prismaMock.tenantApplication.findUnique.mockResolvedValue({
+    id: 'application-1',
+    companyName: 'Test Rent A Car',
+    slug: 'test-rentacar',
+    status: 'PENDING',
+  });
+
+  prismaMock.tenant.findUnique.mockResolvedValue(null);
+  prismaMock.tenantApplication.updateMany.mockResolvedValue({ count: 1 });
+
+  prismaMock.tenant.create.mockResolvedValue({
+    id: 'tenant-1',
+    name: 'Test Rent A Car',
+    slug: 'test-rentacar',
+    status: 'APPROVED',
+  });
+
+  prismaMock.tenantApplication.update.mockResolvedValue({
+    id: 'application-1',
+    status: 'APPROVED',
+    tenantId: 'tenant-1',
+  });
+
+  await request(app.getHttpServer())
+    .patch('/api/tenant-applications/application-1/approve')
+    .set('Authorization', `Bearer ${token}`)
+    .expect(200)
+    .expect((response) => {
+      expect(response.body).toMatchObject({
+        id: 'application-1',
+        status: 'APPROVED',
+        tenantId: 'tenant-1',
+      });
+    });
+
+  expect(prismaMock.tenant.create).toHaveBeenCalledTimes(1);
+});
+
+it('PATCH approve - nonexistent application returns 404', async () => {
+  const configService = app.get(ConfigService);
+  const secret = configService.getOrThrow<string>('JWT_SECRET');
+
+  const token = await jwtService.signAsync(
+    { sub: admin.id, role: 'PLATFORM_ADMIN' },
+    { secret },
+  );
+
+  prismaMock.tenantApplication.findUnique.mockResolvedValue(null);
+
+  await request(app.getHttpServer())
+    .patch('/api/tenant-applications/missing-id/approve')
+    .set('Authorization', `Bearer ${token}`)
+    .expect(404);
+
+  expect(prismaMock.tenant.create).not.toHaveBeenCalled();
+});
+
+it('PATCH approve - already approved application returns 409', async () => {
+  const configService = app.get(ConfigService);
+  const secret = configService.getOrThrow<string>('JWT_SECRET');
+
+  const token = await jwtService.signAsync(
+    { sub: admin.id, role: 'PLATFORM_ADMIN' },
+    { secret },
+  );
+
+  prismaMock.tenantApplication.findUnique.mockResolvedValue({
+    id: 'application-1',
+    status: 'APPROVED',
+  });
+
+  await request(app.getHttpServer())
+    .patch('/api/tenant-applications/application-1/approve')
+    .set('Authorization', `Bearer ${token}`)
+    .expect(409);
+
+  expect(prismaMock.tenant.create).not.toHaveBeenCalled();
+});
+
 });
