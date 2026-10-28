@@ -1,9 +1,8 @@
-import { Injectable , ConflictException, NotFoundException,} from '@nestjs/common';
+import { Injectable , ConflictException, NotFoundException, BadRequestException , } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateTenantApplicationDto } from './dto/create-tenant-application.dto';
+import { RejectTenantApplicationDto } from './dto/reject-tenant-application.dto';
 import { TenantApplicationStatus, TenantStatus, } from '../generated/prisma/enums';
-
-
 
 
 @Injectable()
@@ -26,6 +25,7 @@ export class TenantApplicationsService {
         });
     }
 
+
     //Tüm şirket başvurularını listeleyen metot
     async findAll(){
         return this.prisma.tenantApplication.findMany({
@@ -35,66 +35,111 @@ export class TenantApplicationsService {
         });
     }
 
-//Başvuru onaylama metodu, başvuruyu onaylar ve onaylanan şirketi platforma kaydeder   
-async approve(id: string) {
-  return this.prisma.$transaction(async (tx) => {
-    const application = await tx.tenantApplication.findUnique({   //başvuruyu id üzerinden bulur
-      where: { id },
+
+    //Başvuru onaylama metodu, başvuruyu onaylar ve onaylanan şirketi platforma kaydeder   
+    async approve(id: string) {
+    return this.prisma.$transaction(async (tx) => {
+        const application = await tx.tenantApplication.findUnique({   //başvuruyu id üzerinden bulur
+        where: { id },
+        });
+
+        if (!application) {
+        throw new NotFoundException('Şirket başvurusu bulunamadı.');
+        }
+
+        if (application.status !== TenantApplicationStatus.PENDING) {
+        throw new ConflictException('Bu başvuru zaten değerlendirilmiş.');
+        }
+
+        const existingTenant = await tx.tenant.findUnique({
+        where: { slug: application.slug },
+        });
+
+        if (existingTenant) {
+        throw new ConflictException('Bu şirket slug değeri zaten kullanılıyor.');
+        }
+
+
+        //Sadece hala PENDING olan başvuruyu güncelle 
+        const result = await tx.tenantApplication.updateMany({  //belirtilen koşulları sağlayan kayıtları günceller
+            where:{
+                id,
+                status: TenantApplicationStatus.PENDING,
+            },
+            data:{
+                status: TenantApplicationStatus.APPROVED,
+                approvedAt: new Date(),
+                rejectionReason: null,
+            },
+        });
+
+        if( result.count !== 1){
+            throw new ConflictException('Başvuru zaten değerlendirilmiş veya şirket mevcut',);
+        }
+
+        //Onaylanan şirketş platforma kaydet
+        const tenant = await tx.tenant.create({
+            data:{
+                name: application.companyName,
+                slug: application.slug,
+                status: TenantStatus.APPROVED,
+            },
+        });
+
+        //Oluşturualn şirketi başvuruyla ilişkilendir
+        return tx.tenantApplication.update({
+            where:{ id },
+            data: {
+                tenantId: tenant.id,
+            },
+        });
+
+    });
+    }
+
+    
+    // Şirket başvurusunu reddeder ve ret gerekçesini kaydeder.
+    async reject(id: string, dto: RejectTenantApplicationDto) {
+    const reason = dto.rejectionReason.trim();   //ret gerekçesinin başındaki ve sonundaki boşlukları kaldrır trim
+
+    if (!reason) {
+        throw new BadRequestException('Ret gerekçesi boş olamaz.');
+    }
+
+    const application = await this.prisma.tenantApplication.findUnique({  //başvuruyu id üzerinden bulur
+        where: { id },
     });
 
     if (!application) {
-      throw new NotFoundException('Şirket başvurusu bulunamadı.');
+        throw new NotFoundException('Şirket başvurusu bulunamadı.');
     }
 
     if (application.status !== TenantApplicationStatus.PENDING) {
-      throw new ConflictException('Bu başvuru zaten değerlendirilmiş.');
+        throw new ConflictException('Bu başvuru zaten değerlendirilmiş.');
     }
 
-    const existingTenant = await tx.tenant.findUnique({
-      where: { slug: application.slug },
-    });
-
-    if (existingTenant) {
-      throw new ConflictException('Bu şirket slug değeri zaten kullanılıyor.');
-    }
-
-
-    //Sadece hala PENDING olan başvuruyu güncelle 
-    const result = await tx.tenantApplication.updateMany({  //belirtilen koşulları sağlayan kayıtları günceller
-        where:{
-            id,
-            status: TenantApplicationStatus.PENDING,
+    const result = await this.prisma.tenantApplication.updateMany({
+        where: {
+        id,
+        status: TenantApplicationStatus.PENDING,
         },
-        data:{
-            status: TenantApplicationStatus.APPROVED,
-            approvedAt: new Date(),
-            rejectionReason: null,
-        },
-    });
-
-    if( result.count !== 1){
-        throw new ConflictException('Başvuru zaten değerlendirilmiş veya şirket mevcut',);
-    }
-
-    //Onaylanan şirketş platforma kaydet
-    const tenant = await tx.tenant.create({
-        data:{
-            name: application.companyName,
-            slug: application.slug,
-            status: TenantStatus.APPROVED,
-        },
-    });
-
-    //Oluşturualn şirketi başvuruyla ilişkilendir
-    return tx.tenantApplication.update({
-        where:{ id },
         data: {
-            tenantId: tenant.id,
+        status: TenantApplicationStatus.REJECTED,
+        rejectionReason: reason,
+        approvedAt: null,
         },
     });
 
-  });
-}
+    if (result.count !== 1) {
+        throw new ConflictException(
+        'Başvuru artık reddedilebilir durumda değil.',
+        );
+    }
+
+    return this.prisma.tenantApplication.findUniqueOrThrow({
+        where: { id },
+    });
+    }
 
  
 }

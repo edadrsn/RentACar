@@ -1,5 +1,5 @@
 
-import { ConflictException, NotFoundException } from '@nestjs/common';
+import { ConflictException, NotFoundException , BadRequestException , } from '@nestjs/common';
 import { TenantApplicationsService } from './tenant-applications.service';
 import { PrismaService } from '../prisma/prisma.service';
 import {
@@ -10,9 +10,11 @@ import {
 describe('TenantApplicationsService', () => {
   let service: TenantApplicationsService;
 
+    
   const txMock = {
     tenantApplication: {
       findUnique: jest.fn(),
+      findUniqueOrThrow: jest.fn(), // YENİ EKLEDİĞİMİZ SATIR
       updateMany: jest.fn(),
       update: jest.fn(),
     },
@@ -23,11 +25,12 @@ describe('TenantApplicationsService', () => {
   };
 
   const prismaMock = {
-    $transaction: jest.fn(
-      async (callback: (tx: typeof txMock) => Promise<unknown>) =>
-        callback(txMock),
-    ),
-  };
+  tenantApplication: txMock.tenantApplication,
+  $transaction: jest.fn(
+    async (callback: (tx: typeof txMock) => Promise<unknown>) =>
+      callback(txMock),
+  ),
+};
 
   beforeEach(() => {
     jest.clearAllMocks();
@@ -125,4 +128,78 @@ describe('TenantApplicationsService', () => {
 
     expect(txMock.tenant.create).not.toHaveBeenCalled();
   });
+
+  
+it('PENDING başvuruyu reddeder ve gerekçeyi kaydeder', async () => {
+  txMock.tenantApplication.findUnique.mockResolvedValue({
+    id: 'application-1',
+    status: TenantApplicationStatus.PENDING,
+  });
+
+  txMock.tenantApplication.updateMany.mockResolvedValue({ count: 1 });
+
+  txMock.tenantApplication.findUniqueOrThrow.mockResolvedValue({
+    id: 'application-1',
+    status: TenantApplicationStatus.REJECTED,
+    rejectionReason: 'Eksik belgeler',
+    tenantId: null,
+  });
+
+  const result = await service.reject('application-1', {
+    rejectionReason: '  Eksik belgeler  ',
+  });
+
+  expect(result.status).toBe(TenantApplicationStatus.REJECTED);
+  expect(result.tenantId).toBeNull();
+
+  expect(txMock.tenantApplication.updateMany).toHaveBeenCalledWith({
+    where: {
+      id: 'application-1',
+      status: TenantApplicationStatus.PENDING,
+    },
+    data: {
+      status: TenantApplicationStatus.REJECTED,
+      rejectionReason: 'Eksik belgeler',
+      approvedAt: null,
+    },
+  });
+
+  expect(txMock.tenant.create).not.toHaveBeenCalled();
+});
+
+it('başvuru bulunamazsa 404 hatası verir', async () => {
+  txMock.tenantApplication.findUnique.mockResolvedValue(null);
+
+  await expect(
+    service.reject('missing-id', {
+      rejectionReason: 'Eksik belgeler',
+    }),
+  ).rejects.toThrow(NotFoundException);
+});
+
+it('zaten değerlendirilmiş başvuru reddedilemez', async () => {
+  txMock.tenantApplication.findUnique.mockResolvedValue({
+    id: 'application-1',
+    status: TenantApplicationStatus.APPROVED,
+  });
+
+  await expect(
+    service.reject('application-1', {
+      rejectionReason: 'Eksik belgeler',
+    }),
+  ).rejects.toThrow(ConflictException);
+
+  expect(txMock.tenantApplication.updateMany).not.toHaveBeenCalled();
+});
+
+it('yalnızca boşluk içeren ret gerekçesi kabul edilmez', async () => {
+  await expect(
+    service.reject('application-1', {
+      rejectionReason: '   ',
+    }),
+  ).rejects.toThrow(BadRequestException);
+
+  expect(txMock.tenantApplication.updateMany).not.toHaveBeenCalled();
+});
+
 });

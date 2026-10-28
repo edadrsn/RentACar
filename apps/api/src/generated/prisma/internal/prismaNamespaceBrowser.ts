@@ -94,6 +94,8 @@ export const TenantApplicationScalarFieldEnum = {
   status: 'status',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
+  rejectionReason: 'rejectionReason',
+  approvedAt: 'approvedAt',
   tenantId: 'tenantId'
 } as const
 

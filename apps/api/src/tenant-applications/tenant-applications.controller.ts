@@ -2,6 +2,7 @@ import { Body , Controller , Post , Get , UseGuards , Param , Patch } from '@nes
 import { ApiOperation, ApiResponse, ApiTags , ApiBearerAuth  } from '@nestjs/swagger';
 import { TenantApplicationsService } from './tenant-applications.service';
 import { CreateTenantApplicationDto } from './dto/create-tenant-application.dto';
+import { RejectTenantApplicationDto } from './dto/reject-tenant-application.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { PlatformAdminGuard } from '../auth/guards/platform-admin.guard';
 
@@ -37,7 +38,7 @@ export class TenantApplicationsController {
     @Patch(':id/approve')
     @UseGuards(JwtAuthGuard , PlatformAdminGuard)  //sadece yetkili platform adminin onaylanamasını sağlıyor
     @ApiBearerAuth()
-    @ApiOperation({ summary: 'Şirket başvurusu başarıyla onaylandı',})
+    @ApiOperation({ summary: 'Şirket başvurusunun onaylanması',})
     @ApiResponse({ status: 200 , description: 'Şirket başvurusu başarıyla onaylandı',})
     @ApiResponse({ status: 401 , description: 'JWT eksik veya geçersiz',})
     @ApiResponse({ status: 403 , description: 'Bu işlem için yetkiniz yok',})
@@ -47,5 +48,21 @@ export class TenantApplicationsController {
         return this.tenantApplicationsService.approve(id);
     }
 
-    
+    @Patch(':id/reject')
+    @UseGuards(JwtAuthGuard , PlatformAdminGuard)
+    @ApiBearerAuth()
+    @ApiOperation({ summary: 'Şirket başvurusunun reddedilmesi',})
+    @ApiResponse({ status: 200 , description: 'Şirket başvurusu reddedildi',})
+    @ApiResponse({ status: 400 , description: 'Ret gerekçesi geçersiz veya boş bırakılamaz',})
+    @ApiResponse({ status: 401 , description: 'JWT bulunamadı veya geçersiz',})
+    @ApiResponse({ status:403 , description: 'Platform admin yetkisi gerekli',})
+    @ApiResponse({ status: 404  ,description: 'Şirket başvurusu bulunamadı',})
+    @ApiResponse({ status: 409 , description: 'Başvuru zaten değerlendirilmiş',})
+    async rejec(
+        @Param('id') id : string,
+        @Body() dto: RejectTenantApplicationDto,
+    ){
+        return this.tenantApplicationsService.reject(id , dto);
+    }
+
 }

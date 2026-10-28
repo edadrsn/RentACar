@@ -9,10 +9,12 @@ import { App } from 'supertest/types';
 import { AppModule } from '../src/app.module';
 import { PrismaService } from '../src/prisma/prisma.service';
 import { configureApp } from '../src/config/app.config';
+import { TenantApplicationStatus } from '../src/generated/prisma/enums';
 
 describe('Tenant Applications (e2e)', () => {
   let app: INestApplication<App>;
   let jwtService: JwtService;
+  let adminToken: string;
 
   const admin = {
     id: 'test-admin-id',
@@ -21,6 +23,7 @@ describe('Tenant Applications (e2e)', () => {
   };
 
   
+
 const prismaMock = {
   platformAdmin: {
     findUnique: jest.fn(),
@@ -28,6 +31,7 @@ const prismaMock = {
   tenantApplication: {
     findMany: jest.fn(),
     findUnique: jest.fn(),
+    findUniqueOrThrow: jest.fn(), // YENİ SATIR
     updateMany: jest.fn(),
     update: jest.fn(),
   },
@@ -37,6 +41,7 @@ const prismaMock = {
   },
   $transaction: jest.fn(),
 };
+
 
 
   beforeAll(async () => {
@@ -51,9 +56,22 @@ const prismaMock = {
     app = moduleFixture.createNestApplication();
     configureApp(app);
 
-    jwtService = app.get(JwtService);
+    
+jwtService = app.get(JwtService);
 
-    await app.init();
+const configService = app.get(ConfigService);
+const secret = configService.getOrThrow<string>('JWT_SECRET');
+
+adminToken = await jwtService.signAsync(
+  {
+    sub: admin.id,
+    role: 'PLATFORM_ADMIN',
+  },
+  { secret },
+);
+
+await app.init();
+
   });
 
   
@@ -214,5 +232,76 @@ it('PATCH approve - already approved application returns 409', async () => {
 
   expect(prismaMock.tenant.create).not.toHaveBeenCalled();
 });
+
+
+describe('PATCH /api/tenant-applications/:id/reject', () => {
+  it('JWT olmadan 401 döner', async () => {
+    await request(app.getHttpServer())
+      .patch('/api/tenant-applications/application-1/reject')
+      .send({ rejectionReason: 'Eksik belgeler' })
+      .expect(401);
+  });
+
+  it('geçersiz ret gerekçesinde 400 döner', async () => {
+    await request(app.getHttpServer())
+      .patch('/api/tenant-applications/application-1/reject')
+      .set('Authorization', `Bearer ${adminToken}`)
+      .send({ rejectionReason: '' })
+      .expect(400);
+  });
+
+  it('olmayan başvuruda 404 döner', async () => {
+    prismaMock.tenantApplication.findUnique.mockResolvedValue(null);
+
+    await request(app.getHttpServer())
+      .patch('/api/tenant-applications/missing-id/reject')
+      .set('Authorization', `Bearer ${adminToken}`)
+      .send({ rejectionReason: 'Eksik belgeler' })
+      .expect(404);
+  });
+
+  it('değerlendirilmiş başvuruda 409 döner', async () => {
+    prismaMock.tenantApplication.findUnique.mockResolvedValue({
+      id: 'application-1',
+      status: TenantApplicationStatus.APPROVED,
+    });
+
+    await request(app.getHttpServer())
+      .patch('/api/tenant-applications/application-1/reject')
+      .set('Authorization', `Bearer ${adminToken}`)
+      .send({ rejectionReason: 'Eksik belgeler' })
+      .expect(409);
+  });
+
+  it('PENDING başvuruyu reddeder ve 200 döner', async () => {
+    prismaMock.tenantApplication.findUnique.mockResolvedValue({
+      id: 'application-1',
+      status: TenantApplicationStatus.PENDING,
+    });
+
+    prismaMock.tenantApplication.updateMany.mockResolvedValue({
+      count: 1,
+    });
+
+    prismaMock.tenantApplication.findUniqueOrThrow.mockResolvedValue({
+      id: 'application-1',
+      status: TenantApplicationStatus.REJECTED,
+      rejectionReason: 'Eksik belgeler',
+      tenantId: null,
+    });
+
+    const response = await request(app.getHttpServer())
+      .patch('/api/tenant-applications/application-1/reject')
+      .set('Authorization', `Bearer ${adminToken}`)
+      .send({ rejectionReason: 'Eksik belgeler' })
+      .expect(200);
+
+    expect(response.body.status).toBe(TenantApplicationStatus.REJECTED);
+    expect(response.body.rejectionReason).toBe('Eksik belgeler');
+    expect(response.body.tenantId).toBeNull();
+  });
+});
+
+
 
 });
