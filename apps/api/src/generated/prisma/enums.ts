@@ -25,3 +25,11 @@ export const TenantApplicationStatus = {
 } as const
 
 export type TenantApplicationStatus = (typeof TenantApplicationStatus)[keyof typeof TenantApplicationStatus]
+
+
+export const CompanyRole = {
+  OWNER: 'OWNER',
+  EMPLOYEE: 'EMPLOYEE'
+} as const
+
+export type CompanyRole = (typeof CompanyRole)[keyof typeof CompanyRole]

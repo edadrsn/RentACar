@@ -54,3 +54,13 @@ export type TenantApplication = Prisma.TenantApplicationModel
  * 
  */
 export type PlatformAdmin = Prisma.PlatformAdminModel
+/**
+ * Model User
+ * 
+ */
+export type User = Prisma.UserModel
+/**
+ * Model CompanyMembership
+ * 
+ */
+export type CompanyMembership = Prisma.CompanyMembershipModel

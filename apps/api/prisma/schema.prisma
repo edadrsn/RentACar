@@ -13,19 +13,23 @@ datasource db {
   provider = "postgresql"
 }
 
+
 enum TenantStatus{
   PENDING
   APPROVED
   REJECTED
 }
 
+
+//Şirketlerin başvuru durumu
 enum TenantApplicationStatus {
   PENDING
   APPROVED
   REJECTED
 }
 
-//Platforma kabul edilen şirketin kaydı
+
+//Platforma kabul edilen şirketin kaydı, Hangi şirket
 model Tenant {
   id             String       @id @default(cuid())   //her kiracı için benzersiz id
   name           String
@@ -36,7 +40,10 @@ model Tenant {
 
   application TenantApplication?
 
+  memberships CompanyMembership[]
 }
+
+
 
 //Şirketlerin başvuru yapmak için gönderdiği başvurular
 model TenantApplication{
@@ -58,6 +65,7 @@ model TenantApplication{
 }
 
 
+
 //Rentacar platform yöneticileri
 model PlatformAdmin{
   id           String   @id @default(cuid())
@@ -68,3 +76,41 @@ model PlatformAdmin{
 }
 
 //passwordHash: kullanıcının şifresinin güvenli bir algoritmayladönüştürülmüş halidir
+
+
+
+//Şirketteki roller
+enum CompanyRole{
+  OWNER      //şirketin kendi yöneticisi
+  EMPLOYEE   //şirket çalışanı
+}
+
+
+
+//Kullanıcı modeli, kullanıcı kim 
+model User {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  passwordHash String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  membership CompanyMembership?
+}
+
+
+
+//Kullanıcı hangi şirkette çalışıyor, o şirkette hangi yetkiye sahip 
+model CompanyMembership {
+  id        String      @id @default(cuid())
+  userId    String      @unique
+  tenantId  String
+  role      CompanyRole @default(EMPLOYEE)
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+
+  user   User   @relation(fields: [userId], references: [id])
+  tenant Tenant @relation(fields: [tenantId], references: [id])     //relation prismaya tabloların birbiriyle nasıl ilişkili olduğunu söyler
+
+  @@index([tenantId])
+}

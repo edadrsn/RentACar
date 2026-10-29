@@ -11,4 +11,6 @@
 export type * from './models/Tenant.js'
 export type * from './models/TenantApplication.js'
 export type * from './models/PlatformAdmin.js'
+export type * from './models/User.js'
+export type * from './models/CompanyMembership.js'
 export type * from './commonInputTypes.js'
