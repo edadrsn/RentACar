@@ -19,22 +19,13 @@ export class TenantsController {
   @Get()
   @UseGuards(JwtAuthGuard, PlatformAdminGuard)
   @ApiBearerAuth('bearer')
-  @ApiOperation({ summary: 'Tüm şirketleri listele'})
+  @ApiOperation({ summary: 'Tüm şirketleri listele (super admin)'})
   @ApiResponse({  status: 200, description: 'Tüm şirketler başarıyla listelendi' })
   findAll() {
     return this.tenantsService.findAll();
   }
 
-  //Yeni şirket oluştur
-  @Post()
-  @UseGuards(JwtAuthGuard, PlatformAdminGuard)
-  @ApiBearerAuth('bearer')
-  @ApiOperation({ summary: 'Yeni şirket oluştur'})
-  @ApiResponse({ status: 201, description: 'Yeni şirket başarıyla oluşturuldu'})
-  @ApiResponse({ status: 400, description: 'Geçersiz veriler. Gönderilen verleri kontrol edin' })
-  create(@Body() createTenantDto: CreateTenantDto) {
-    return this.tenantsService.create(createTenantDto);
-  }
+
 }
 
 

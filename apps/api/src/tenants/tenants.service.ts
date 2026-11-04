@@ -7,17 +7,6 @@ import { CreateTenantDto } from './dto/create-tenant.dto';
 export class TenantsService {
   constructor(private readonly prisma: PrismaService) {}
 
-
-  //Yeni bir tenantı(şirketi) veritabanına kaydeder
-  async create(createTenantDto: CreateTenantDto) {
-    return this.prisma.tenant.create({
-      data: {
-        slug: createTenantDto.slug,
-        name: createTenantDto.name,
-  },
-    });
-  }
-
 //select: veritabanındna dönen sonuçta hangi alanların gösterileceğini belirler
 
 //Veritabanında kayıtlı tenantları(şirketleri) listeler  
