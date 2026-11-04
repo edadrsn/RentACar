@@ -27,9 +27,13 @@ export class TenantApplicationsService {
 
 
     //Tüm şirket başvurularını listeleyen metot
-    async findAll(){
+    async findAll(status?: TenantApplicationStatus){
         return this.prisma.tenantApplication.findMany({
-            orderBy: {
+            where : {
+                ...(status ? {status} : {}), //status gönderilmişse filtre uygular gönderilmemişse tüm kayıtları getirir
+            },
+
+            orderBy:{
                 createdAt: 'desc',
             },
         });

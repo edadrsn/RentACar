@@ -202,4 +202,50 @@ it('yalnızca boşluk içeren ret gerekçesi kabul edilmez', async () => {
   expect(txMock.tenantApplication.updateMany).not.toHaveBeenCalled();
 });
 
+
+it('slug zaten kullanılıyorsa 409 hatası verir', async () => {
+  txMock.tenantApplication.findUnique.mockResolvedValue({
+    id: 'application-2',
+    companyName: 'ABC Rent A Car',
+    slug: 'abc-rentacar',
+    status: TenantApplicationStatus.PENDING,
+  });
+
+  txMock.tenant.findUnique.mockResolvedValue({
+    id: 'tenant-1',
+    name: 'ABC Rent A Car',
+    slug: 'abc-rentacar',
+  });
+
+  await expect(
+    service.approve('application-2'),
+  ).rejects.toThrow(ConflictException);
+
+  expect(txMock.tenant.create).not.toHaveBeenCalled();
+  expect(txMock.tenantApplication.updateMany).not.toHaveBeenCalled();
+});
+
+
+it('reddetme sırasında başvurunun durumu değişmişse 409 verir', async () => {
+  txMock.tenantApplication.findUnique.mockResolvedValue({
+    id: 'application-1',
+    status: TenantApplicationStatus.PENDING,
+  });
+
+  txMock.tenantApplication.updateMany.mockResolvedValue({
+    count: 0,
+  });
+
+  await expect(
+    service.reject('application-1', {
+      rejectionReason: 'Eksik belgeler',
+    }),
+  ).rejects.toThrow(ConflictException);
+
+  expect(
+    txMock.tenantApplication.findUniqueOrThrow,
+  ).not.toHaveBeenCalled();
+});
+
+
 });

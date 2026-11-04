@@ -1,10 +1,11 @@
-import { Body , Controller , Post , Get , UseGuards , Param , Patch } from '@nestjs/common';
+import { Body , Controller , Post , Get , UseGuards , Param , Patch , Query} from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags , ApiBearerAuth  } from '@nestjs/swagger';
 import { TenantApplicationsService } from './tenant-applications.service';
 import { CreateTenantApplicationDto } from './dto/create-tenant-application.dto';
 import { RejectTenantApplicationDto } from './dto/reject-tenant-application.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { PlatformAdminGuard } from '../auth/guards/platform-admin.guard';
+import { ListTenantApplicationsQueryDto } from './dto/list-tenant-applications-query.dto';
 
 @ApiTags('Tenant Applications')
 @Controller('tenant-applications')
@@ -14,13 +15,14 @@ export class TenantApplicationsController {
     @Get()
     @UseGuards(JwtAuthGuard , PlatformAdminGuard)  //önce jwtyi ardından paltform admin yetkisini kontrol eder
     @ApiBearerAuth()  //swaggerda bearer tokenle kimlik doğrulaması gerektiğini belirtir
-    @ApiOperation({ summary: 'Tüm şirket başvurularını listele'})
+    @ApiOperation({ summary: 'Tüm şirket başvurularını listele (super admin)'})
     @ApiResponse({ status: 200, description: 'Tüm şirket başvuruları başarıyla listelendi'})
-    @ApiResponse({ status: 402, description: 'Kimlik doğrulaması başarısız. Hatalı veya geçersiz token gönderildi.'})
+    @ApiResponse({ status: 401, description: 'Kimlik doğrulaması başarısız. Hatalı veya geçersiz token gönderildi.'})
     @ApiResponse({ status: 403 , description: 'Bu işlem için yetkiniz bulunmamaktadır'})    
-    findAll(){
-        return this.tenantApplicationsService.findAll();
+    findAll(@Query() query: ListTenantApplicationsQueryDto) {
+    return this.tenantApplicationsService.findAll(query.status);
     }
+
     
   
 
@@ -38,7 +40,7 @@ export class TenantApplicationsController {
     @Patch(':id/approve')
     @UseGuards(JwtAuthGuard , PlatformAdminGuard)  //sadece yetkili platform adminin onaylanamasını sağlıyor
     @ApiBearerAuth()
-    @ApiOperation({ summary: 'Şirket başvurusunun onaylanması',})
+    @ApiOperation({ summary: 'Şirket başvurusunun onaylanması (super admin)',})
     @ApiResponse({ status: 200 , description: 'Şirket başvurusu başarıyla onaylandı',})
     @ApiResponse({ status: 401 , description: 'JWT eksik veya geçersiz',})
     @ApiResponse({ status: 403 , description: 'Bu işlem için yetkiniz yok',})
@@ -51,7 +53,7 @@ export class TenantApplicationsController {
     @Patch(':id/reject')
     @UseGuards(JwtAuthGuard , PlatformAdminGuard)
     @ApiBearerAuth()
-    @ApiOperation({ summary: 'Şirket başvurusunun reddedilmesi',})
+    @ApiOperation({ summary: 'Şirket başvurusunun reddedilmesi (super admin)',})
     @ApiResponse({ status: 200 , description: 'Şirket başvurusu reddedildi',})
     @ApiResponse({ status: 400 , description: 'Ret gerekçesi geçersiz veya boş bırakılamaz',})
     @ApiResponse({ status: 401 , description: 'JWT bulunamadı veya geçersiz',})
